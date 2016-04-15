@@ -36,7 +36,7 @@ if [ "$1" == "-help" ]; then
 	((opt++))
 	help
 fi
-if (($opt == 0)); then
-	echo "No valid argument!"
+if (($opt != $#)); then
+	echo "Invalid arguments! $1 , $2"
 	help
 fi
