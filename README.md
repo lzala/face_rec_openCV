@@ -2,17 +2,16 @@
 
 Hints:
 
-build system >
+< build system >
  - make sure you have cmake and opencv correctly installed
  - cd build
  - cmake ..
 
-add new subject >
+< add new subject >
   - create new folder <SubjectName> in /data
   - add at least 10 images: grayscale + 100x100 resolution
-  - ./facerec.sh - update - updates CVS file with the new subject
-  
-execute application:
+  - ./facerec.sh - update (updates CVS file with the new subject)
+
+< execute application >
   - cd util
   - ./facerec.sh -build -run
-  - CVS file will be automalically update with the new subject by facerec.sh
