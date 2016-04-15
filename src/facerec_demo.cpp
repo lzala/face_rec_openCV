@@ -19,19 +19,12 @@
  *
  */
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/contrib/contrib.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/objdetect/objdetect.hpp"
+#include "../inc/recognizer.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-using namespace cv;
+//using namespace cv;
 using namespace std;
 
+#ifdef TEST
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels,
 				vector<string>& names, char separator = ';') {
 	std::ifstream file(filename.c_str(), ifstream::in);
@@ -55,6 +48,7 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
 		}
 	}
 }
+#endif
 
 int main(int argc, const char *argv[]) {
 	if (argc != 4) {
@@ -70,6 +64,13 @@ int main(int argc, const char *argv[]) {
 	string fn_csv = string(argv[2]);
 	int deviceId = atoi(argv[3]);
 
+	Recognizer<cv::FaceRecognizer> face(fn_haar, fn_csv, deviceId);
+	while(1) {
+		face.getFrame();
+		face.detect();
+		face.recognize();
+	}
+#ifdef TEST
 	vector<Mat> images;
 	vector<int> labels;
 	vector<string> names;
@@ -82,7 +83,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	// Create a FaceRecognizer and train it on the given images:
-	Ptr<FaceRecognizer> model = createLBPHFaceRecognizer();
+	cv::Ptr<FaceRecognizer> model = createLBPHFaceRecognizer();
 	model->train(images, labels);
 	CascadeClassifier haar_cascade;
 	haar_cascade.load(fn_haar);
@@ -111,7 +112,7 @@ int main(int argc, const char *argv[]) {
 		if (faces.size()) {
 			Rect face_i = faces[0];
 			Mat face = gray(face_i);
-			model->set("threshold", 50.0);
+			model->set("threshold", 150.0);
 			double predicted_confidence = 0.0;
 			int prediction = -1;
 			model->predict(face, prediction, predicted_confidence);
@@ -137,5 +138,6 @@ int main(int argc, const char *argv[]) {
 		if(key == 27)
 			break;
 		}
+#endif
 	return 0;
 }
