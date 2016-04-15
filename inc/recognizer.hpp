@@ -6,22 +6,25 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/objdetect/objdetect.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 template <class T>
 class Recognizer
 {
 private:
-	Ptr<T> model;
+	std::Ptr<T> model;
 	cv::CascadeClassifier haar_cascade;
-	vector<cv::Mat> images;
-	vector<int> labels;
-	vector<string> names;
+	std::vector<cv::Mat> images;
+	std::vector<int> labels;
+	std::vector<std::string> names;
 
 public:
 	Recognizer();
 	cv::Mat getVideoFrame(int deviceId);
-	vector< Rect_<int> > detectFace();
-	friend void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels,
-				vector<string>& names, char separator);
+	std::vector< cv::Rect_<int> > detectFace();
+	friend void read_csv(const std::string& filename, std::vector<cv::Mat>& images,
+				std::vector<int>& labels, std::vector<string>& names, char separator);
 
 }

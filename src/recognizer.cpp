@@ -34,6 +34,19 @@ Recognizer::Recognizer(string fn_haar, string fn_csv, int deviceId)
 	haar_cascade.load(fn_haar);
 }
 
+cv::Mat Recognizer::getVideoFrame(int deviceId){
+	// Get a handle to the Video device:
+	VideoCapture cap(deviceId);
+	// Check if we can use this device at all:
+	if(!cap.isOpened()) {
+		cerr << "Capture Device ID " << deviceId << "cannot be opened." << endl;
+		return -1;
+	}
+	Mat video_frame;
+	cap >> video_frame;
+
+	return video_frame;
+}
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels,
 				vector<string>& names, char separator = ';') {
 	std::ifstream file(filename.c_str(), ifstream::in);
