@@ -10,6 +10,12 @@ function help {
 
 opt=0;
 
+if [ ! -d "../build" ]; then
+	mkdir ../build && cd ../build
+	cmake ..
+	cd ../util
+fi
+
 function update {
 	./create_cvs.py ../data > data.cvs
 }
