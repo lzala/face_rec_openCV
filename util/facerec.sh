@@ -10,16 +10,22 @@ function help {
 
 opt=0;
 
+if [ ! -d "../build" ]; then
+	mkdir ../build && cd ../build
+	cmake ..
+	cd ../util
+fi
+
 function update {
-	./create_cvs.py ../data > data.txt
+	./create_cvs.py ../data > data.cvs
 }
 
 if [ "$1" == "-update" ] || [ "$2" == "-update" ]; then
 	((opt++))
 	update
 	echo "Update..."
-	cat ../data data.txt
-	ls -l data.txt
+	cat ../data data.cvs
+	ls -l data.cvs
 fi
 if [ "$1" == "-build" ] || [ "$2" == "-build" ]; then
 	((opt++))
@@ -30,7 +36,7 @@ if [ "$1" == "-run" ] || [ "$2" == "-run" ]; then
 	((opt++))
 	update
 	echo "Run..."
-	./../build/facerec_demo haarcascade_frontalface_default.xml data.txt 0
+	./../build/facerec_demo haarcascade_frontalface_default.xml data.cvs 0
 fi
 if [ "$1" == "-help" ]; then
 	((opt++))
