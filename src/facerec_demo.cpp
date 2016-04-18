@@ -21,7 +21,7 @@
 #include "../inc/recognizer.hpp"
 
 using namespace std;
-
+const int NO_SAMPLES = 30;
 
 int main(int argc, const char *argv[]) {
 	if (argc != 4) {
@@ -39,12 +39,41 @@ int main(int argc, const char *argv[]) {
 
 	Recognizer face(fn_haar, fn_csv, deviceId);
 
-	while(1) {
+	int samples = NO_SAMPLES;
+	vector<string> subjects;
+	while(samples--) {
 		face.getFrame();
 		if(face.detect()) {
-			cout << face.recognize().c_str() << endl;
+			subjects.push_back(face.recognize().c_str());
 		}
 	}
+	sort(subjects.begin(), subjects.end());
+#ifdef DEBUG
+	for (int i = 0; i < NO_SAMPLES; i++) {
+		cout << subjects.at(i).c_str() << endl;
+	}
+#endif
+	vector<int> idsCount;
+	vector<string> idsString;
+	int walk = 0, i = 0;
+	while (walk < NO_SAMPLES) {
+		idsCount.push_back(count(subjects.begin() + walk, subjects.end(),
+					subjects.at(walk).c_str()));
+		idsString.push_back(subjects.at(walk).c_str());
+		walk += idsCount.at(i);
+		i++;
+	}
+
+	int max = 0, index = 0;
+	for (int i = 0; i < idsCount.size(); i++)
+		cout << "Found: " << idsCount.at(i) << " " << idsString.at(i).c_str() << endl;
+	max  = *max_element(idsCount.begin(), idsCount.end());
+	index = distance(idsCount.begin(), max_element(idsCount.begin(), idsCount.end()));
+
+	cout << "Max= " << max << endl;
+	cout << "Index = " << index << endl;
+	cout << idsString.at(index).c_str() << " " << (100 * max) / NO_SAMPLES << "%";
+
 
 	return 0;
 }

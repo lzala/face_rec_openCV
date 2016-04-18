@@ -30,6 +30,8 @@
 #include <fstream>
 #include <sstream>
 
+//#define DEBUG
+
 class Recognizer {
 
 private:

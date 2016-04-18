@@ -83,15 +83,16 @@ int Recognizer::detect(void)
 
 std::string Recognizer::recognize(void)
 {
-	std::string name("");
+	std::string name("None");
 	double confidence = 0.0;
 	int prediction = -1;
 	cv::Mat face = gray(faces[0]);
-	model->set("threshold", 50.0);
+	model->set("threshold", 70.0);
 
 	model->predict(face, prediction, confidence);
 	if (prediction >= 0) {
 		name = names.at(prediction).c_str();
+#ifdef DEBUG
 		std::cout << "Prediction " << prediction << " Confidence " <<
 			confidence << " Name " << name << std::endl;
 		cv::rectangle(frame, faces[0], CV_RGB(0, 255,0), 1);
@@ -100,8 +101,11 @@ std::string Recognizer::recognize(void)
 		int pos_y = std::max(faces[0].tl().y - 10, 0);
 		cv::putText(frame, box_text, cv::Point(pos_x, pos_y),
 			cv::FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0,255,0), 2.0);
+#endif
 	}
+#ifdef DEBUG
 	cv::imshow("face_recognizer", frame);
 	char key = (char) cv::waitKey(20);
+#endif
 	return name;
 }

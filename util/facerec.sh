@@ -1,5 +1,7 @@
 #!/bin/bash
 
+opt=0;
+
 function help {
 	echo "APP Menu"
 	echo "Available options:"
@@ -8,17 +10,15 @@ function help {
 	echo "	-build   - Compile the application"
 }
 
-opt=0;
+function update {
+	./create_cvs.py ../data > data.cvs
+}
 
 if [ ! -d "../build" ]; then
 	mkdir ../build && cd ../build
 	cmake ..
 	cd ../util
 fi
-
-function update {
-	./create_cvs.py ../data > data.cvs
-}
 
 if [ "$1" == "-update" ] || [ "$2" == "-update" ]; then
 	((opt++))
