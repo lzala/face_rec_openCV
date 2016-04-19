@@ -26,54 +26,53 @@ const int NO_SAMPLES = 30;
 int main(int argc, const char *argv[]) {
 	if (argc != 4) {
 		cout << "usage: " << argv[0] <<
-			" </path/to/haar_cascade> </path/to/csv.ext> </path/to/device id>" << endl;
+			" </path/to/haar_cascade> </path/to/data.cvs> </path/to/device id>" << endl;
 		cout << "\t </path/to/haar_cascade> - Path to the Haar Cascade for face detection." << endl;
 		cout << "\t </path/to/data.cvs> - Path to the CSV file with the face database." << endl;
 		cout << "\t <device id> - The webcam device id to grab frames from." << endl;
 		exit(1);
 	}
 
-	string fn_haar = string(argv[1]);
-	string fn_csv = string(argv[2]);
+	string pathHaar = string(argv[1]);
+	string pathCSV = string(argv[2]);
 	int deviceId = atoi(argv[3]);
 
-	Recognizer face(fn_haar, fn_csv, deviceId);
+	Recognizer face(pathHaar, pathCSV, deviceId);
 
 	int samples = NO_SAMPLES;
 	vector<string> subjects;
-	while(samples--) {
+	while (samples--) {
 		face.getFrame();
 		if(face.detect()) {
 			subjects.push_back(face.recognize().c_str());
 		}
 	}
-	sort(subjects.begin(), subjects.end());
+	if (subjects.size()) {
+		sort(subjects.begin(), subjects.end());
 #ifdef DEBUG
-	for (int i = 0; i < NO_SAMPLES; i++) {
-		cout << subjects.at(i).c_str() << endl;
-	}
+		for (int i = 0; i < subjects.size(); i++) {
+			cout << subjects.at(i).c_str() << endl;
+		}
 #endif
-	vector<int> idsCount;
-	vector<string> idsString;
-	int walk = 0, i = 0;
-	while (walk < NO_SAMPLES) {
-		idsCount.push_back(count(subjects.begin() + walk, subjects.end(),
-					subjects.at(walk).c_str()));
-		idsString.push_back(subjects.at(walk).c_str());
-		walk += idsCount.at(i);
-		i++;
+		vector<int> idsCount;
+		vector<string> idsString;
+		int walk = 0, i = 0;
+		while (walk < subjects.size()) {
+			idsCount.push_back(count(subjects.begin() + walk, subjects.end(),
+						subjects.at(walk).c_str()));
+			idsString.push_back(subjects.at(walk).c_str());
+			walk += idsCount.at(i);
+			i++;
+		}
+		int max = 0, index = 0;
+		sort(subjects.begin(), subjects.end());
+#ifdef DEBUG
+		for (int i = 0; i < idsCount.size(); i++)
+			cout << "Found: " << idsCount.at(i) << " " << idsString.at(i).c_str() << endl;
+#endif
+		max  = *max_element(idsCount.begin(), idsCount.end());
+		index = distance(idsCount.begin(), max_element(idsCount.begin(), idsCount.end()));
+		cout << idsString.at(index).c_str() << " " << (100 * max) / subjects.size() << "%" << endl;
 	}
-
-	int max = 0, index = 0;
-	for (int i = 0; i < idsCount.size(); i++)
-		cout << "Found: " << idsCount.at(i) << " " << idsString.at(i).c_str() << endl;
-	max  = *max_element(idsCount.begin(), idsCount.end());
-	index = distance(idsCount.begin(), max_element(idsCount.begin(), idsCount.end()));
-
-	cout << "Max= " << max << endl;
-	cout << "Index = " << index << endl;
-	cout << idsString.at(index).c_str() << " " << (100 * max) / NO_SAMPLES << "%";
-
-
 	return 0;
 }

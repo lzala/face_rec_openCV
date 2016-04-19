@@ -35,7 +35,7 @@
 class Recognizer {
 
 private:
-	cv::CascadeClassifier haar_cascade;
+	cv::CascadeClassifier haarCascade;
 	cv::Ptr<cv::FaceRecognizer> model;
 	cv::VideoCapture capture;
 	cv::Mat frame;
@@ -45,9 +45,8 @@ private:
 	std::vector<cv::Mat> images;
 	std::vector<int> labels;
 
-
 public:
-	Recognizer(std::string fn_haar, std::string fn_csv, int deviceId);
+	Recognizer(std::string pathHaar, std::string pathCVS, int deviceId);
 	void getFrame();
 	int detect(void);
 	std::string recognize(void);
