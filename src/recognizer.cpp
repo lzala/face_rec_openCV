@@ -25,40 +25,40 @@ void readCVS(const std::string& filename, std::vector<cv::Mat>& images,std::vect
 {
 	std::ifstream file(filename.c_str(), std::ifstream::in);
 	if (!file) {
-		std::string error_message =
+		std::string errorMessage =
 			"No valid input file was given, please check the given filename.";
-		CV_Error(CV_StsBadArg, error_message);
+		CV_Error(CV_StsBadArg, errorMessage);
 	}
-	std::string line, path, classlabel, name, prev_name = "";
+	std::string line, path, classLabel, name, prevName = "";
 	while (getline(file, line)) {
 		std::stringstream liness(line);
 		getline(liness, path, separator);
-		getline(liness, classlabel, separator);
+		getline(liness, classLabel, separator);
 		getline(liness, name);
-		if(!path.empty() && !classlabel.empty()) {
+		if(!path.empty() && !classLabel.empty()) {
 			images.push_back(cv::imread(path, 0));
-			labels.push_back(atoi(classlabel.c_str()));
-			if (name != prev_name) {
+			labels.push_back(atoi(classLabel.c_str()));
+			if (name != prevName) {
 				names.push_back(name);
-				prev_name = name;
+				prevName = name;
 			}
 		}
 	}
 }
 
-Recognizer::Recognizer(std::string fn_haar, std::string fn_csv, int deviceId)
+Recognizer::Recognizer(std::string pathHaar, std::string pathCVS, int deviceId)
 {
 	try {
-		readCVS(fn_csv, images, labels, names);
+		readCVS(pathCVS, images, labels, names);
 	} catch (cv::Exception& e) {
-		std::cerr << "Error opening file \"" << fn_csv << "\". Reason: " << e.msg << std::endl;
+		std::cerr << "Error opening file \"" << pathCVS << "\". Reason: " << e.msg << std::endl;
 		exit(1);
 	}
 	model = cv::createLBPHFaceRecognizer();
 	model->train(images, labels);
-	haar_cascade.load(fn_haar);
+	haarCascade.load(pathHaar);
 	cv::VideoCapture cap(deviceId);
-	if(!cap.isOpened()) {
+	if (!cap.isOpened()) {
 		std::cerr << "Capture Device ID " << deviceId << "cannot be opened." << std::endl;
 		return;
 	}
@@ -77,31 +77,35 @@ int Recognizer::detect(void)
 	cvtColor(frame, gray, CV_BGR2GRAY);
 	// In order to speed up the algorithm only the main (biggest) face is detected
 	int flags = CV_HAAR_FIND_BIGGEST_OBJECT;
-	haar_cascade.detectMultiScale(gray, faces, 1.1, 3, flags);
+	haarCascade.detectMultiScale(gray, faces, 1.1, 3, flags);
 	return faces.size();
 }
 
 std::string Recognizer::recognize(void)
 {
-	std::string name("");
+	std::string name("None");
 	double confidence = 0.0;
 	int prediction = -1;
 	cv::Mat face = gray(faces[0]);
-	model->set("threshold", 50.0);
+	model->set("threshold", 60.0);
 
 	model->predict(face, prediction, confidence);
 	if (prediction >= 0) {
 		name = names.at(prediction).c_str();
+#ifdef DEBUG
 		std::cout << "Prediction " << prediction << " Confidence " <<
 			confidence << " Name " << name << std::endl;
 		cv::rectangle(frame, faces[0], CV_RGB(0, 255,0), 1);
-		cv::string box_text = cv::format(" Name = %s ", name.c_str());
-		int pos_x = std::max(faces[0].tl().x - 10, 0);
-		int pos_y = std::max(faces[0].tl().y - 10, 0);
-		cv::putText(frame, box_text, cv::Point(pos_x, pos_y),
+		cv::string boxText = cv::format(" Name = %s ", name.c_str());
+		int posX = std::max(faces[0].tl().x - 10, 0);
+		int posY = std::max(faces[0].tl().y - 10, 0);
+		cv::putText(frame, boxText, cv::Point(posX, posY),
 			cv::FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0,255,0), 2.0);
+#endif
 	}
+#ifdef DEBUG
 	cv::imshow("face_recognizer", frame);
 	char key = (char) cv::waitKey(20);
+#endif
 	return name;
 }
