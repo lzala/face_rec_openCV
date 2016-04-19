@@ -47,6 +47,7 @@ private:
 
 public:
 	Recognizer(std::string pathHaar, std::string pathCVS, int deviceId);
+	~Recognizer();
 	void getFrame();
 	int detect(void);
 	std::string recognize(void);

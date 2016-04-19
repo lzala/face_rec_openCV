@@ -65,7 +65,6 @@ int main(int argc, const char *argv[]) {
 			i++;
 		}
 		int max = 0, index = 0;
-		sort(subjects.begin(), subjects.end());
 #ifdef DEBUG
 		for (int i = 0; i < idsCount.size(); i++)
 			cout << "Found: " << idsCount.at(i) << " " << idsString.at(i).c_str() << endl;

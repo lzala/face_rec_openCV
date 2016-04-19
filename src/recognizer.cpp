@@ -65,6 +65,11 @@ Recognizer::Recognizer(std::string pathHaar, std::string pathCVS, int deviceId)
 	capture = cap;
 }
 
+Recognizer::~Recognizer()
+{
+	capture.release();
+}
+
 void Recognizer::getFrame(void)
 {
 	cv::Mat vFrame;
