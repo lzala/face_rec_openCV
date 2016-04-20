@@ -37,7 +37,7 @@ class Recognizer {
 private:
 	cv::CascadeClassifier haarCascade;
 	cv::Ptr<cv::FaceRecognizer> model;
-	cv::VideoCapture capture;
+	cv::VideoCapture *capture;
 	cv::Mat frame;
 	cv::Mat gray;
 	std::vector< cv::Rect_<int> > faces;

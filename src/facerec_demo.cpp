@@ -34,10 +34,10 @@ int main(int argc, const char *argv[]) {
 	}
 
 	string pathHaar = string(argv[1]);
-	string pathCSV = string(argv[2]);
+	string pathCVS = string(argv[2]);
 	int deviceId = atoi(argv[3]);
 
-	Recognizer face(pathHaar, pathCSV, deviceId);
+	Recognizer face(pathHaar, pathCVS, deviceId);
 
 	int samples = NO_SAMPLES;
 	vector<string> subjects;

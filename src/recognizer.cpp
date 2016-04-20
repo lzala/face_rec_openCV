@@ -57,23 +57,22 @@ Recognizer::Recognizer(std::string pathHaar, std::string pathCVS, int deviceId)
 	model = cv::createLBPHFaceRecognizer();
 	model->train(images, labels);
 	haarCascade.load(pathHaar);
-	cv::VideoCapture cap(deviceId);
-	if (!cap.isOpened()) {
+	capture = new cv::VideoCapture(deviceId);
+	if (!capture->isOpened()) {
 		std::cerr << "Capture Device ID " << deviceId << "cannot be opened." << std::endl;
 		return;
 	}
-	capture = cap;
 }
 
 Recognizer::~Recognizer()
 {
-	capture.release();
+	delete capture;
 }
 
 void Recognizer::getFrame(void)
 {
 	cv::Mat vFrame;
-	capture >> vFrame;
+	*capture >> vFrame;
 	frame = vFrame.clone();
 }
 
