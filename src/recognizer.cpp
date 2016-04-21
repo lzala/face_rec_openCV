@@ -59,9 +59,11 @@ Recognizer::Recognizer(std::string pathHaar, std::string pathCVS, int deviceId)
 	haarCascade.load(pathHaar);
 	capture = new cv::VideoCapture(deviceId);
 	if (!capture->isOpened()) {
-		std::cerr << "Capture Device ID " << deviceId << "cannot be opened." << std::endl;
-		return;
+		std::cerr << "Capture Device ID " << deviceId << " cannot be opened." << std::endl;
+		exit(1);
 	}
+	capture->set(CV_CAP_PROP_FRAME_WIDTH, 320);
+	capture->set(CV_CAP_PROP_FRAME_HEIGHT, 240);
 }
 
 Recognizer::~Recognizer()

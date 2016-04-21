@@ -36,7 +36,13 @@ if [ "$1" == "-run" ] || [ "$2" == "-run" ]; then
 	((opt++))
 	update
 	echo "Run..."
-	./../build/facerec_demo haarcascade_frontalface_default.xml data.cvs 0
+	var="$(./../build/facerec_demo haarcascade_frontalface_default.xml data.cvs 0 2>&1 > /dev/null)"
+	if [ ! -z "$var" ]; then
+		sudo ./usbreset /dev/bus/usb/001/$(expr "$(lsusb | grep 046d:0825)" : '.*Device\ \([0-9]\+\)')
+		echo $var
+		sleep 5
+		./../build/facerec_demo haarcascade_frontalface_default.xml data.cvs 0
+	fi
 fi
 if [ "$1" == "-help" ]; then
 	((opt++))
