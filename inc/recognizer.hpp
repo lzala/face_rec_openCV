@@ -30,7 +30,7 @@
 #include <fstream>
 #include <sstream>
 
-#define DEBUG
+//#define DEBUG
 
 class Recognizer {
 

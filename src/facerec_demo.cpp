@@ -21,7 +21,7 @@
 #include "../inc/recognizer.hpp"
 
 using namespace std;
-const int NO_SAMPLES = 5;
+const int NO_SAMPLES = 30;
 
 int main(int argc, const char *argv[]) {
 	if (argc != 4) {
