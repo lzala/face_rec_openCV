@@ -93,7 +93,7 @@ std::string Recognizer::recognize(void)
 	double confidence = 0.0;
 	int prediction = -1;
 	cv::Mat face = gray(faces[0]);
-	model->set("threshold", 60.0);
+	model->set("threshold", 100.0);
 
 	model->predict(face, prediction, confidence);
 	if (prediction >= 0) {

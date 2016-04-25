@@ -44,8 +44,9 @@ if [ "$1" == "-run" ] || [ "$2" == "-run" ]; then
 		sleep 5 # Timeout needed for the webcam usb enumeration after forced reset
 		./../build/facerec_demo haarcascade_frontalface_default.xml data.cvs 0
 	else
-		cat stdout && rm stdout
+		cat stdout
 	fi
+	rm stdout
 fi
 if [ "$1" == "-help" ]; then
 	((opt++))
